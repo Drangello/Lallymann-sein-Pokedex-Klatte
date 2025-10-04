@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Lallymann´s Pokédex</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Lallymann sein Pokédex</h1>
+  </header>
+  <main id="pokedex">
+  </main>
+  <div class="load-more-container">
+    <button id="loadMoreBtn">Mehr laden</button>
+  </div>
+  <div id="pokemonDialog" class="dialog hidden">
+  <div class="dialog-content">
+    <button id="closeDialog">X</button>
+    <button id="muteBtn">🔊</button>
+
+    <h2 id="dialogName"></h2>
+    <img id="dialogImg" src="" alt="">
+
+    <!-- Seiten Navigation -->
+    <div class="page-nav">
+      <button data-page="1">Pokédex</button>
+      <button data-page="2">Stats</button>
+      <button data-page="3">Evolution</button>
+    </div>
+
+    <!-- Seiten Container -->
+    <div class="dialog-pages">
+      <!-- Seite 1: Pokedex-Eintrag -->
+      <div class="page" id="page1">
+        <p id="pokedexEntry">Lade Eintrag...</p>
+      </div>
+
+      <!-- Seite 2: Stats -->
+      <div class="page hidden" id="page2">
+        <canvas id="statsChart" width="300" height="300"></canvas>
+      </div>
+
+      <!-- Seite 3: Evolution -->
+      <div class="page hidden" id="page3">
+        <div id="evolutionChain">Lade Evolution...</div>
+      </div>
+    </div>
+
+    <!-- Dialog Navigation zwischen Pokemon -->
+    <div class="dialog-nav">
+      <button id="prevPokemon">⬅️</button>
+      <button id="nextPokemon">➡️</button>
+    </div>
+  </div>
+</div>
+  <footer>
+    <p>Lallymann sein Pokédex</p>
+  </footer>
+  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</body>
+</html>
