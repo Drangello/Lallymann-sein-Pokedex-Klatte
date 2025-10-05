@@ -12,11 +12,41 @@ header, footer {
   text-align: center;
 }
 
-main#pokedex {
+main {
+  max-width: 1200px;   /* maximale Breite */
+  margin: 0 auto;      /* in der Mitte halten */
+  padding: 2rem 1rem;  /* etwas Innenabstand */
+}
+
+/* Pokedex-Grid */
+#pokedex {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 15px;
-  padding: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+/* Pokemon-Karten */
+.pokemon-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 1rem;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.pokemon-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+.pokemon-card img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  margin: 0.5rem 0;
 }
 
 .pokemon-card {

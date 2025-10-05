@@ -3,6 +3,11 @@ const loadMoreBtn = document.getElementById("loadMoreBtn");
 
 let offset = 0;
 const limit = 30;
+let currentPokemonIndex = 0;
+let currentPokemonList = [];
+let isMuted = false;
+let cryAudio = null;
+
 
 async function loadPokemon(offset, limit) {
   const url = `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`;
@@ -41,11 +46,6 @@ loadMoreBtn.addEventListener("click", () => {
   loadPokemon(offset, limit);
 });
 
-let currentPokemonIndex = 0;
-let currentPokemonList = [];
-let isMuted = false;
-let cryAudio = null;
-
 function displayPokemon(pokemonList) {
   currentPokemonList = [...currentPokemonList, ...pokemonList]; // speichern
   
@@ -69,44 +69,7 @@ function displayPokemon(pokemonList) {
   });
 }
 
-function openDialog(pokemon) {
-  const dialog = document.getElementById("pokemonDialog");
-  dialog.classList.remove("hidden");
 
-  document.getElementById("dialogName").textContent = pokemon.name.toUpperCase();
-  document.getElementById("dialogImg").src = pokemon.sprites.other["official-artwork"].front_default;
-  document.getElementById("dialogInfo").textContent = 
-    `ID: ${pokemon.id} | Typ: ${pokemon.types.map(t => t.type.name).join(", ")}`;
-
-  // Pokémon-Cry laden
-  playCry(pokemon.id);
-
-  // Stats-Chart
-  const stats = pokemon.stats.map(s => s.base_stat);
-  const labels = pokemon.stats.map(s => s.stat.name);
-
-  if (window.statsChartInstance) {
-    window.statsChartInstance.destroy();
-  }
-  const ctx = document.getElementById("statsChart").getContext("2d");
-  window.statsChartInstance = new Chart(ctx, {
-    type: "radar",
-    data: {
-      labels: labels,
-      datasets: [{
-        label: pokemon.name,
-        data: stats,
-        backgroundColor: "rgba(255,99,132,0.2)",
-        borderColor: "rgba(255,99,132,1)"
-      }]
-    },
-    options: {
-      scales: {
-        r: { beginAtZero: true }
-      }
-    }
-  });
-}
 
 function playCry(id) {
   if (cryAudio) cryAudio.pause();
@@ -135,23 +98,24 @@ document.getElementById("prevPokemon").addEventListener("click", () => {
   currentPokemonIndex = (currentPokemonIndex - 1 + currentPokemonList.length) % currentPokemonList.length;
   openDialog(currentPokemonList[currentPokemonIndex]);
 });
+
 async function openDialog(pokemon) {
   const dialog = document.getElementById("pokemonDialog");
   dialog.classList.remove("hidden");
 
   document.getElementById("dialogName").textContent = pokemon.name.toUpperCase();
   document.getElementById("dialogImg").src = pokemon.sprites.other["official-artwork"].front_default;
-
+  
   // Cry abspielen
   playCry(pokemon.id);
-  // Seiten zurücksetzen
+  // Tabs reset
   showPage(1);
   // --- Seite 1: Pokédex-Eintrag ---
   const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemon.id}/`);
   const speciesData = await speciesRes.json();
   const entry = speciesData.flavor_text_entries.find(e => e.language.name === "en")?.flavor_text 
              || "No entry available.";
-  document.getElementById("pokedexEntry").textContent = entry.replace(g, " ");
+  document.getElementById("pokedexEntry").textContent = entry.replace(/\n|\f/g, " ");
 
   // --- Seite 2: Stats Diagramm ---
   const stats = pokemon.stats.map(s => s.base_stat);
@@ -173,9 +137,7 @@ async function openDialog(pokemon) {
       }]
     },
     options: {
-      scales: {
-        r: { beginAtZero: true }
-      }
+      scales: { r: { beginAtZero: true } }
     }
   });
 
@@ -189,6 +151,8 @@ async function openDialog(pokemon) {
 // Helfer: Evolutionen aufbauen (rekursiv)
 function buildEvolutionChain(chain) {
   let evo = `<div>${chain.species.name}</div>`;
+  console.log(chain);
+  
   if (chain.evolves_to.length > 0) {
     evo += `<div class="evo-arrow">➡️</div>`;
     evo += buildEvolutionChain(chain.evolves_to[0]);
